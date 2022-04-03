@@ -5,17 +5,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Engine/DataTable.h"
+#include "FortressTownTypes.h"
+#include "FTGameInstance.h"
 #include "BuildingActor.generated.h"
-
-UENUM(BlueprintType)
-enum class EBuildingLevel : uint8
-{
-	None = 0,
-	Basic,
-	Advanced,
-	Pro,
-	MAX UMETA(Hidden)
-};
 
 USTRUCT(BlueprintType)
 struct FBuildingSettingsRow : public FTableRowBase
@@ -27,6 +19,12 @@ struct FBuildingSettingsRow : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float BuildingTime = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int Income = 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int IncomeStorageMax = 3600;
 };
 
 UCLASS(Abstract, NotBlueprintable)
@@ -39,7 +37,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	void UpdateNextLevelData();
+	FBuildingSettingsRow* GetLevelData(int PlusLevel = 0);
 
 	const FString EnumToString(const TCHAR* Enum, int32 EnumValue);
 
@@ -57,4 +55,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float BuildingTime = 1.0f;
+
+	UFTGameInstance* FTGameInstance;
 };

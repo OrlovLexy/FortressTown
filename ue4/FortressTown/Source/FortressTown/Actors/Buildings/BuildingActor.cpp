@@ -2,26 +2,31 @@
 
 
 #include "BuildingActor.h"
+#include "Kismet/GameplayStatics.h"
 
 
 void ABuildingActor::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UpdateNextLevelData();	
+	FTGameInstance = Cast<UFTGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+
+	if ((uint8)BuildingLevel < (uint8)EBuildingLevel::MAX - 1)
+	{
+		BuildingCost = GetLevelData(1)->BuildingCost;
+		BuildingTime = GetLevelData(1)->BuildingTime;
+	}
 }
 
-void ABuildingActor::UpdateNextLevelData()
+FBuildingSettingsRow* ABuildingActor::GetLevelData(int PlusLevel /*= 0*/)
 {
-	FName RowName = (FName)EnumToString(TEXT("EBuildingLevel"), (uint8)BuildingLevel + 1);
+	FName RowName = (FName)EnumToString(TEXT("EBuildingLevel"), (uint8)BuildingLevel + PlusLevel);
 	static const FString ContextString(TEXT("Find Level Data"));
 	if (RowName == TEXT("MAX"))
 	{
-		return;
+		return nullptr;
 	}
-
-	BuildingCost = BuildingSettings->FindRow<FBuildingSettingsRow>(RowName, ContextString)->BuildingCost;
-	BuildingTime = BuildingSettings->FindRow<FBuildingSettingsRow>(RowName, ContextString)->BuildingTime;
+	return BuildingSettings->FindRow<FBuildingSettingsRow>(RowName, ContextString);
 }
 
 const FString ABuildingActor::EnumToString(const TCHAR* Enum, int32 EnumValue)

@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Actors/Buildings/BuildingActor.h"
+#include "ProductionActor.h"
 #include "TownHallActor.generated.h"
 
-UCLASS(Blueprintable)
-class FORTRESSTOWN_API ATownHallActor : public ABuildingActor
+UCLASS()
+class FORTRESSTOWN_API ATownHallActor : public AProductionActor
 {
 	GENERATED_BODY()
 	
