@@ -12,8 +12,12 @@ void UFTGameInstance::AddResourceValue(EResourceType ResourceType, int Value)
 {
 	Resources[ResourceType] += Value;
 }
-
-int UFTGameInstance::GetResourceValue(EResourceType ResourceType)
+const int& UFTGameInstance::GetResourceValue(EResourceType ResourceType)
 {
 	return Resources[ResourceType];
+}
+
+const TMap<EResourceType, int>& UFTGameInstance::GetResorcesValue()
+{
+	return Resources;
 }

@@ -2,6 +2,7 @@
 
 
 #include "ProductionActor.h"
+#include "Characters/FTBaseCharacter.h"
 
 AProductionActor::AProductionActor()
 {
@@ -23,6 +24,11 @@ void AProductionActor::CollectResources()
 	{
 		FTGameInstance->AddResourceValue(ResourceType, IncomeStorage);
 		IncomeStorage = 0;
+	}
+
+	if (CachedBaseCharacter->OnResourceCountChanged.IsBound())
+	{
+		CachedBaseCharacter->OnResourceCountChanged.Broadcast();
 	}
 }
 

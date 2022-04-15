@@ -15,7 +15,8 @@ class FORTRESSTOWN_API UFTGameInstance : public UGameInstance
 public:
 	void SetResourceValue(EResourceType ResourceType, int Value);
 	void AddResourceValue(EResourceType ResourceType, int Value);
-	int GetResourceValue(EResourceType ResourceType);
+	const int& GetResourceValue(EResourceType ResourceType);
+	const TMap<EResourceType, int>& GetResorcesValue();
 
 private:
 	TMap<EResourceType, int> Resources;

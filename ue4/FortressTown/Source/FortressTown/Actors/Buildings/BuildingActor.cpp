@@ -3,6 +3,7 @@
 
 #include "BuildingActor.h"
 #include "Kismet/GameplayStatics.h"
+#include "Characters/FTBaseCharacter.h"
 
 
 void ABuildingActor::BeginPlay()
@@ -10,6 +11,7 @@ void ABuildingActor::BeginPlay()
 	Super::BeginPlay();
 
 	FTGameInstance = Cast<UFTGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	CachedBaseCharacter = Cast<AFTBaseCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 
 	if ((uint8)BuildingLevel < (uint8)EBuildingLevel::MAX - 1)
 	{

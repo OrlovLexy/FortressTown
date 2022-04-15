@@ -33,7 +33,7 @@ class FORTRESSTOWN_API ABuildingActor : public AActor
 	GENERATED_BODY()
 	
 public:	
-
+	
 protected:
 	virtual void BeginPlay() override;
 
@@ -57,4 +57,6 @@ protected:
 	float BuildingTime = 1.0f;
 
 	UFTGameInstance* FTGameInstance;
+
+	TSoftObjectPtr<class AFTBaseCharacter> CachedBaseCharacter;
 };
