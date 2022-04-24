@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "PlayerHUDWidget.generated.h"
 
+class UBuildingHUDWidget;
 UCLASS()
 class FORTRESSTOWN_API UPlayerHUDWidget : public UUserWidget
 {
@@ -14,7 +15,13 @@ class FORTRESSTOWN_API UPlayerHUDWidget : public UUserWidget
 public:
 	class UResourcesWidget* GetResourcesWidget();
 
+	void SetBuildingHUDHelpVisibility(bool bIsVisible);
+	void SetBuildingHUDActionText(FName ActionTextName);
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "WidgetNames")
 	FName ResourcesWidgetName;
+
+	UPROPERTY(meta = (BindWidget))
+	UBuildingHUDWidget* BuildingHUDWidget;
 };

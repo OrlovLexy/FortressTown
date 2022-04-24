@@ -4,8 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "UObject/ScriptInterface.h"
 #include "FTTopDownController.generated.h"
 
+class IInteractable;
 UCLASS()
 class FORTRESSTOWN_API AFTTopDownController : public APlayerController
 {
@@ -19,6 +21,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Widgets")
 	TSubclassOf<class UPlayerHUDWidget> PlayerHUDWidgetClass;
 
+	UPROPERTY()
+	TScriptInterface<IInteractable> DestinationObject;
+
 	uint32 bMoveToMouseCursor : 1;
 
 	virtual void PlayerTick(float DeltaTime) override;
@@ -26,6 +31,7 @@ protected:
 	virtual void SetupInputComponent() override;
 
 	void MoveToMouseCursor();
+
 	void MoveToTouchLocation(const ETouchIndex::Type FingerIndex, const FVector Location);
 
 	void SetNewMoveDestination(const FVector DestLocation);
@@ -33,6 +39,10 @@ protected:
 	void OnSetDestinationPressed();
 	void OnSetDestinationReleased();
 
+	void Interact();
+	void InteractOnTouchReleased(const ETouchIndex::Type FingerIndex, const FVector Location);
+
+	void SetDestinationObject(FHitResult& HitResult);
 
 private:
 	void CreateAndInitializeWidgets();

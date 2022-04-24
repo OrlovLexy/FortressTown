@@ -7,6 +7,7 @@
 #include "Engine/DataTable.h"
 #include "FortressTownTypes.h"
 #include "FTGameInstance.h"
+#include "Actors/Interface/Interactable.h"
 #include "BuildingActor.generated.h"
 
 USTRUCT(BlueprintType)
@@ -28,14 +29,18 @@ struct FBuildingSettingsRow : public FTableRowBase
 };
 
 UCLASS(Abstract, NotBlueprintable)
-class FORTRESSTOWN_API ABuildingActor : public AActor
+class FORTRESSTOWN_API ABuildingActor : public AActor, public IInteractable
 {
 	GENERATED_BODY()
 	
 public:	
+	virtual void Interact(AFTTopDownController* Controller) override;
+	virtual FName GetActionEventName() const override;
 	
 protected:
 	virtual void BeginPlay() override;
+
+	virtual void InteractWithBuilding();
 
 	FBuildingSettingsRow* GetLevelData(int PlusLevel = 0);
 
@@ -49,6 +54,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Building Settings")
 	class UBuildingDataAsset* MeshSettings;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Building Settings")
+	FName ActionInteract = FName("Interact");
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int BuildingCost = 100;

@@ -9,6 +9,7 @@
 #include "Blueprint/UserWidget.h"
 #include "UI/Widget/HUD/PlayerHUDWidget.h"
 #include "UI/Widget/HUD/ResourcesWidget.h"
+#include "Actors/Interface/Interactable.h"
 
 AFTTopDownController::AFTTopDownController()
 {
@@ -39,6 +40,7 @@ void AFTTopDownController::PlayerTick(float DeltaTime)
 	FHitResult TraceHitResult;
 	GetHitResultUnderCursor(ECC_Visibility, true, TraceHitResult);
 	CachedBaseCharacter->SetCursorHitResult(TraceHitResult);
+	SetDestinationObject(TraceHitResult);
 }
 
 void AFTTopDownController::SetupInputComponent()
@@ -47,10 +49,12 @@ void AFTTopDownController::SetupInputComponent()
 
 	InputComponent->BindAction("SetDestination", IE_Pressed, this, &AFTTopDownController::OnSetDestinationPressed);
 	InputComponent->BindAction("SetDestination", IE_Released, this, &AFTTopDownController::OnSetDestinationReleased);
+	InputComponent->BindAction("Interact", IE_Pressed, this, &AFTTopDownController::Interact);
 
 	// support touch devices 
 	InputComponent->BindTouch(EInputEvent::IE_Pressed, this, &AFTTopDownController::MoveToTouchLocation);
 	InputComponent->BindTouch(EInputEvent::IE_Repeat, this, &AFTTopDownController::MoveToTouchLocation);
+	InputComponent->BindTouch(EInputEvent::IE_Released, this, &AFTTopDownController::InteractOnTouchReleased);
 }
 
 void AFTTopDownController::MoveToMouseCursor()
@@ -73,6 +77,7 @@ void AFTTopDownController::MoveToTouchLocation(const ETouchIndex::Type FingerInd
 	// Trace to see what is under the touch location
 	FHitResult HitResult;
 	GetHitResultAtScreenPosition(ScreenSpaceLocation, CurrentClickTraceChannel, true, HitResult);
+	SetDestinationObject(HitResult);
 	if (HitResult.bBlockingHit)
 	{
 		// We hit something, move there
@@ -103,6 +108,40 @@ void AFTTopDownController::OnSetDestinationPressed()
 void AFTTopDownController::OnSetDestinationReleased()
 {
 	bMoveToMouseCursor = false;
+}
+
+void AFTTopDownController::Interact()
+{
+	if (DestinationObject.GetInterface())
+	{
+		DestinationObject->Interact(this);
+	}
+}
+
+void AFTTopDownController::InteractOnTouchReleased(const ETouchIndex::Type FingerIndex, const FVector Location)
+{
+	Interact();
+}
+
+void AFTTopDownController::SetDestinationObject(FHitResult& HitResult)
+{
+	if (DestinationObject.GetObject() != HitResult.Actor && IsValid(PlayerHUDWidget))
+	{
+		FName ActionName;
+		DestinationObject = HitResult.Actor.Get();
+
+		if (DestinationObject.GetInterface())
+		{
+			ActionName = DestinationObject->GetActionEventName();
+			PlayerHUDWidget->SetBuildingHUDActionText(ActionName);
+			PlayerHUDWidget->SetBuildingHUDHelpVisibility(true);
+		}
+		else
+		{
+			ActionName = NAME_None;
+			PlayerHUDWidget->SetBuildingHUDHelpVisibility(false);
+		}
+	}
 }
 
 void AFTTopDownController::CreateAndInitializeWidgets()

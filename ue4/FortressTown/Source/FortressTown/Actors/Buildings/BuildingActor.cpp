@@ -6,6 +6,16 @@
 #include "Characters/FTBaseCharacter.h"
 
 
+void ABuildingActor::Interact(AFTTopDownController* Controller)
+{
+	InteractWithBuilding();
+}
+
+FName ABuildingActor::GetActionEventName() const
+{
+	return ActionInteract;
+}
+
 void ABuildingActor::BeginPlay()
 {
 	Super::BeginPlay();
@@ -18,6 +28,11 @@ void ABuildingActor::BeginPlay()
 		BuildingCost = GetLevelData(1)->BuildingCost;
 		BuildingTime = GetLevelData(1)->BuildingTime;
 	}
+}
+
+void ABuildingActor::InteractWithBuilding()
+{
+
 }
 
 FBuildingSettingsRow* ABuildingActor::GetLevelData(int PlusLevel /*= 0*/)
